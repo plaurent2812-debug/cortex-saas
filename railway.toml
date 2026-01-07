@@ -1,0 +1,20 @@
+[build]
+builder = "nixpacks"
+
+[deploy]
+startCommand = "gunicorn config.wsgi --log-file -"
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 10
+
+# CRON Jobs - NHL Data Automation
+[[crons]]
+schedule = "0 12 * * *"
+command = "python manage.py fetch_game_results"
+
+[[crons]]
+schedule = "0 16 * * *"
+command = "python manage.py fetch_nhl_data"
+
+[[crons]]
+schedule = "30 16 * * *"
+command = "python manage.py injury_guardian"

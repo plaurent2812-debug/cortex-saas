@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}Abonnement Premium | Jarvis NHL{% endblock %}
+
+{% block content %}
+<div class="min-h-full flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div class="sm:mx-auto sm:w-full sm:max-w-md">
+        <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+            Devenez CORTEX Premium 🧠
+        </h2>
+        <p class="mt-2 text-center text-sm text-gray-600">
+            Accédez aux prédictions algorithmiques exclusives.
+        </p>
+    </div>
+
+    <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+        <div class="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10 text-center">
+
+            <div class="mb-6">
+                <span class="text-5xl font-extrabold text-gray-900">29€</span>
+                <span class="text-base font-medium text-gray-500">/mois</span>
+            </div>
+
+            <ul class="text-left text-sm text-gray-600 space-y-3 mb-8 px-4">
+                <li class="flex items-center">
+                    <svg class="flex-shrink-0 h-5 w-5 text-green-500" xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd"
+                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                            clip-rule="evenodd" />
+                    </svg>
+                    <span class="ml-2">Accès illimité aux CORTEX Bankers</span>
+                </li>
+                <li class="flex items-center">
+                    <svg class="flex-shrink-0 h-5 w-5 text-green-500" xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd"
+                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                            clip-rule="evenodd" />
+                    </svg>
+                    <span class="ml-2">Calcul des cotes en temps réel</span>
+                </li>
+                <li class="flex items-center">
+                    <svg class="flex-shrink-0 h-5 w-5 text-green-500" xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd"
+                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                            clip-rule="evenodd" />
+                    </svg>
+                    <span class="ml-2">Annulation à tout moment</span>
+                </li>
+            </ul>
+
+            <form action="{% url 'subscribe' %}" method="POST">
+                {% csrf_token %}
+                <button type="submit"
+                    class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transform transition hover:scale-105 duration-200">
+                    S'abonner maintenant
+                </button>
+            </form>
+
+            <p class="mt-4 text-xs text-gray-400">Paiement sécurisé par Stripe</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

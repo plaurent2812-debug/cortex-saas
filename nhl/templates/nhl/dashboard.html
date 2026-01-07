@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% load cortex_extras %}
+
+{% block title %}Dashboard NHL | Cortex{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900">NHL Cortex Center</h1>
+        <p class="mt-2 text-gray-600">Analyses et prédictions algorithmiques.</p>
+    </div>
+
+    <!-- CONTROLS & FILTERS -->
+    <div class="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0 text-sm">
+
+        <!-- FILTERS -->
+        <div class="flex items-center space-x-4">
+            <!-- Team Filter -->
+            <select name="team"
+                class="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                hx-get="{% url 'nhl:nhl_dashboard' %}" hx-target="#matches-grid" hx-swap="outerHTML"
+                hx-trigger="change">
+                <option value="">Toutes les équipes</option>
+                {% for t in teams %}
+                <option value="{{ t.abbreviation }}" {% if selected_team == t.abbreviation %}selected{% endif %}>
+                    {{ t.full_name }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- REFRESH BUTTON -->
+        <button
+            class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            hx-get="{% url 'nhl:nhl_dashboard' %}" hx-target="#matches-grid" hx-swap="outerHTML">
+            <svg class="mr-2 -ml-1 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+            Live Refresh
+        </button>
+    </div>
+
+    <!-- MATCHES GRID (HTMX TARGET) -->
+    {% include "nhl/partials/_match_list.html" %}
+
+</div>
+
+<!-- HTMX (Ensure it is loaded) -->
+<script src="https://unpkg.com/htmx.org@1.9.10"></script>
+{% endblock %}

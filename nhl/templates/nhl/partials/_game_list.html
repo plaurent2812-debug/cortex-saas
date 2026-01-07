@@ -1,0 +1,143 @@
+{% load cortex_extras %}
+
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8" id="games-grid">
+
+    <!-- SECTION PUBLIC PICKS -->
+    <div class="bg-white rounded-lg shadow overflow-hidden">
+        <div class="bg-indigo-600 px-4 py-5 sm:px-6 flex justify-between items-center">
+            <div>
+                <h3 class="text-lg leading-6 font-medium text-white">Public Picks 🆓</h3>
+                <p class="mt-1 max-w-2xl text-sm text-indigo-100">Opportunités à haute cote (> 2.00)</p>
+            </div>
+            <!-- Risk info tooltip or similar could go here -->
+        </div>
+        <div class="border-t border-gray-200">
+            <ul role="list" class="divide-y divide-gray-200">
+                {% for game in public_picks %}
+                <li class="px-4 py-4 sm:px-6 hover:bg-gray-50 transition duration-150">
+                    <div class="flex items-center justify-between">
+                        <div class="flex flex-col">
+                            <a href="{% url 'nhl:player_detail' game.player_id %}"
+                                class="text-sm font-medium text-indigo-600 hover:text-indigo-800 hover:underline truncate">
+                                {{ game.name }}
+                            </a>
+                            <div class="flex items-center mt-1 space-x-2">
+                                <span
+                                    class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                    {{ game.team }}
+                                </span>
+                                <span class="text-sm text-gray-500">vs {{ game.opp }}</span>
+
+                                <!-- Risk Badge -->
+                                {% if game.python_vol > 8.0 %}
+                                <span
+                                    class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-orange-100 text-orange-800"
+                                    title="Volatilité élevée">
+                                    ⚠️ Risqué
+                                </span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="flex flex-col items-end">
+                            <p class="text-2xl font-bold text-indigo-600">{{ game.success_probability|floatformat:0 }}%
+                            </p>
+                            <p class="text-xs text-gray-500">Probabilité</p>
+                        </div>
+                    </div>
+                </li>
+                {% empty %}
+                <li class="px-4 py-4 sm:px-6 text-gray-500 text-sm text-center">Aucun public pick disponible pour le
+                    moment.</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        {% if not is_premium %}
+        <div class="bg-blue-50 px-4 py-4 sm:px-6 border-t border-blue-200">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-blue-900">
+                        🎁 Vous voyez <strong>3 pronos gratuits</strong> sur {{ public_picks|length }}
+                    </p>
+                    <p class="text-xs text-blue-700 mt-1">
+                        Débloquez l'analyse complète pour voir tous les pronos + CORTEX Bankers
+                    </p>
+                </div>
+                <a href="{% url 'core:subscribe' %}"
+                    class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 whitespace-nowrap">
+                    Passer Premium 🚀
+                </a>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- SECTION CORTEX BANKERS (PREMIUM) -->
+    <div
+        class="bg-white rounded-lg shadow overflow-hidden transform transition hover:scale-105 duration-300 border-2 border-yellow-400">
+        <div class="bg-gray-900 px-4 py-5 sm:px-6 flex justify-between items-center">
+            <div>
+                <h3 class="text-lg leading-6 font-medium text-yellow-400">CORTEX Bankers 💎</h3>
+                <p class="mt-1 max-w-2xl text-sm text-gray-400">Top confiance algo (> 130 score)</p>
+            </div>
+            {% if not request.user|is_premium_check %}
+            <span
+                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                Verrouillé
+            </span>
+            {% endif %}
+        </div>
+        <div class="border-t border-gray-200">
+            <ul role="list" class="divide-y divide-gray-200">
+                {% for game in cortex_bankers %}
+                <li class="px-4 py-4 sm:px-6 hover:bg-gray-50 transition duration-150 relative">
+                    <div class="flex items-center justify-between">
+                        <div class="flex flex-col">
+                            <p class="text-sm font-medium text-gray-900">
+                                {% blur_if_free request.user game.name %}
+                            </p>
+                            <div class="flex items-center mt-1 space-x-2">
+                                <span
+                                    class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                                    Score: {% blur_if_free request.user game.algo_score_goal|floatformat:0 %}
+                                </span>
+
+                                <!-- Risk Badge -->
+                                {% if game.python_vol > 8.0 %}
+                                <span
+                                    class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-orange-100 text-orange-800"
+                                    title="Volatilité élevée">
+                                    ⚠️ Risqué
+                                </span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="flex flex-col items-end">
+                            <p class="text-lg font-bold text-gray-900">
+                                {% blur_if_free request.user game.calculated_odds %}
+                            </p>
+                            <p class="text-xs text-gray-500">Cote</p>
+                        </div>
+                    </div>
+
+                    <!-- CTA for free users -->
+                    {% if not request.user|is_premium_check %}
+                    <div class="absolute inset-0 flex items-center justify-center pointer-events-none"></div>
+                    {% endif %}
+                </li>
+                {% empty %}
+                <li class="px-4 py-4 sm:px-6 text-gray-500 text-sm text-center">Aucun banker détecté aujourd'hui.</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% if not request.user|is_premium_check %}
+        <div class="bg-gray-50 px-4 py-4 sm:px-6 text-center">
+            <a href="{% url 'core:subscribe' %}"
+                class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700">
+                Débloquer les Bankers ⚡️
+            </a>
+        </div>
+        {% endif %}
+    </div>
+
+</div>
