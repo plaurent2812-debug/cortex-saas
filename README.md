@@ -64,3 +64,4 @@ Application de prédiction et d'analyse de paris sportifs NHL, propulsée par l'
 ## Déploiement
 
 Voir [DEPLOYMENT.md](DEPLOYMENT.md) pour les instructions complètes de déploiement sur Cloud Run.
+# Railway deployment
