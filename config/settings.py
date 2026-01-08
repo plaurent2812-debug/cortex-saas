@@ -209,6 +209,11 @@ LOGIN_URL = '/accounts/login/'
 
 # Activés uniquement si DEBUG=False
 if not DEBUG:
+    # CRITICAL: Railway/Render use reverse proxies (handle HTTPS, forward HTTP to Django)
+    # Without this, SECURE_SSL_REDIRECT creates infinite redirect loop
+    # This tells Django to trust the X-Forwarded-Proto header from the proxy
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    
     SECURE_SSL_REDIRECT = True
     SECURE_HSTS_SECONDS = 31536000  # 1 an
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
